@@ -85,3 +85,27 @@ cmake \
 if [ "${MODE}" = "install" ]; then
   make -j
 fi
+
+# Generate application descriptor files for QGIS Processing Plugins
+## S1TilingSupportApplications
+$PREFIX/bin/otbQgisDescriptor MultitempFilteringFilter \
+  $PREFIX/lib/otb/applications \
+  $PREFIX/share/otb/description/
+$PREFIX/bin/otbQgisDescriptor MultitempFilteringOutcore \
+  $PREFIX/lib/otb/applications \
+  $PREFIX/share/otb/description/
+## SertitObject
+$PREFIX/bin/otbQgisDescriptor Aggregate \
+  $PREFIX/lib/otb/applications \
+  $PREFIX/share/otb/description/
+$PREFIX/bin/otbQgisDescriptor ObjectsRadiometricStatistics \
+  $PREFIX/lib/otb/applications \
+  $PREFIX/share/otb/description/
+## otbGRM
+$PREFIX/bin/otbQgisDescriptor GenericRegionMerging \
+  $PREFIX/lib/otb/applications \
+  $PREFIX/share/otb/description/
+## OTBTemporalGapFilling
+$PREFIX/bin/otbQgisDescriptor ImageTimeSeriesGapFilling \
+  $PREFIX/lib/otb/applications \
+  $PREFIX/share/otb/description/
