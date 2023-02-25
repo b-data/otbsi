@@ -132,8 +132,7 @@ RUN if [ "$(uname -m)" = "x86_64" ]; then \
 RUN if [ "$(uname -m)" = "x86_64" ]; then \
     . /etc/os-release; \
     if $(echo $VERSION_CODENAME | grep -Eq "buster|bullseye|focal"); then \
-      apt-get -y install \
-        libossim-dev; \
+      apt-get -y install libossim-dev; \
     fi \
   fi
 
