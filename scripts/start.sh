@@ -11,10 +11,10 @@ if [[ ! "${PREFIX}" == "/usr/local" && ! "${PREFIX}" =~ ^"/opt" ]]; then
 fi
 
 # Download and extract source code
-curl -sSL https://www.orfeo-toolbox.org/packages/archives/OTB/OTB-$OTB_VERSION.tar.gz \
-  -o /tmp/OTB-$OTB_VERSION.tar.gz
-mkdir -p /tmp/OTB-$OTB_VERSION
-tar xfz /tmp/OTB-$OTB_VERSION.tar.gz --no-same-owner -C /tmp/OTB-$OTB_VERSION
+curl -sSL https://www.orfeo-toolbox.org/packages/archives/OTB/OTB-${OTB_VERSION}.tar.gz \
+  -o /tmp/OTB-${OTB_VERSION}.tar.gz
+mkdir -p /tmp/OTB-${OTB_VERSION}
+tar xfz /tmp/OTB-${OTB_VERSION}.tar.gz --no-same-owner -C /tmp/OTB-${OTB_VERSION}
 
 # Build and install
 cmake \
@@ -57,55 +57,55 @@ cmake \
   -DUSE_SYSTEM_ZLIB=${USE_SYSTEM_ZLIB} \
   -DOTB_WRAP_PYTHON=${OTB_WRAP_PYTHON} \
   -DOTB_WRAP_QGIS=${OTB_WRAP_QGIS} \
+  -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_INSTALL_PREFIX=${PREFIX} \
-  /tmp/OTB-$OTB_VERSION/SuperBuild
+  /tmp/OTB-${OTB_VERSION}/SuperBuild
 
 if [ "${MODE}" = "install" ]; then
   make -j
-fi
 
-# Install DiapOTB module if OTB version < 8
-CMAKE_EXTRA_ARGS=()
+  # Install DiapOTB module if OTB version < 8
+  CMAKE_EXTRA_ARGS=()
 
-if [[ "${OTB_VERSION}" < "8" ]]; then
-  CMAKE_EXTRA_ARGS+=(
-    "-DModule_DiapOTBModule=ON"
-  )
-fi
+  if [[ "${OTB_VERSION}" < "8" ]]; then
+    CMAKE_EXTRA_ARGS+=(
+      "-DModule_DiapOTBModule=ON"
+    )
+  fi
 
-# Build and install remote modules
-cmake \
-  -DModule_S1TilingSupportApplications=ON \
-  -DModule_SertitObject=ON \
-  -DModule_otbGRM=ON \
-  -DModule_OTBTemporalGapFilling=ON \
-  "${CMAKE_EXTRA_ARGS[@]}" \
-  OTB/build
+  # Build and install remote modules
+  cmake \
+    -DModule_S1TilingSupportApplications=ON \
+    -DModule_SertitObject=ON \
+    -DModule_otbGRM=ON \
+    -DModule_OTBTemporalGapFilling=ON \
+    "${CMAKE_EXTRA_ARGS[@]}" \
+    OTB/build
 
-if [ "${MODE}" = "install" ]; then
   make -j
-fi
 
-# Generate application descriptor files for QGIS Processing Plugins
-## S1TilingSupportApplications
-$PREFIX/bin/otbQgisDescriptor MultitempFilteringFilter \
-  $PREFIX/lib/otb/applications \
-  $PREFIX/share/otb/description/
-$PREFIX/bin/otbQgisDescriptor MultitempFilteringOutcore \
-  $PREFIX/lib/otb/applications \
-  $PREFIX/share/otb/description/
-## SertitObject
-$PREFIX/bin/otbQgisDescriptor Aggregate \
-  $PREFIX/lib/otb/applications \
-  $PREFIX/share/otb/description/
-$PREFIX/bin/otbQgisDescriptor ObjectsRadiometricStatistics \
-  $PREFIX/lib/otb/applications \
-  $PREFIX/share/otb/description/
-## otbGRM
-$PREFIX/bin/otbQgisDescriptor GenericRegionMerging \
-  $PREFIX/lib/otb/applications \
-  $PREFIX/share/otb/description/
-## OTBTemporalGapFilling
-$PREFIX/bin/otbQgisDescriptor ImageTimeSeriesGapFilling \
-  $PREFIX/lib/otb/applications \
-  $PREFIX/share/otb/description/
+  # Generate application descriptor files for QGIS Processing Plugins
+  ## DiapOTBModule: Generated automatically during installation
+  ## S1TilingSupportApplications
+  ${PREFIX}/bin/otbQgisDescriptor MultitempFilteringFilter \
+    ${PREFIX}/lib/otb/applications \
+    ${PREFIX}/share/otb/description/
+  ${PREFIX}/bin/otbQgisDescriptor MultitempFilteringOutcore \
+    ${PREFIX}/lib/otb/applications \
+    ${PREFIX}/share/otb/description/
+  ## SertitObject
+  ${PREFIX}/bin/otbQgisDescriptor Aggregate \
+    ${PREFIX}/lib/otb/applications \
+    ${PREFIX}/share/otb/description/
+  ${PREFIX}/bin/otbQgisDescriptor ObjectsRadiometricStatistics \
+    ${PREFIX}/lib/otb/applications \
+    ${PREFIX}/share/otb/description/
+  ## otbGRM
+  ${PREFIX}/bin/otbQgisDescriptor GenericRegionMerging \
+    ${PREFIX}/lib/otb/applications \
+    ${PREFIX}/share/otb/description/
+  ## OTBTemporalGapFilling
+  ${PREFIX}/bin/otbQgisDescriptor ImageTimeSeriesGapFilling \
+    ${PREFIX}/lib/otb/applications \
+    ${PREFIX}/share/otb/description/
+fi
