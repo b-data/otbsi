@@ -115,26 +115,34 @@ fi
 # Generate application descriptor files for QGIS Processing Plugins
 # DiapOTBModule: Generated automatically during installation
 if [ "${MODE}" = "install" ]; then
-  # S1TilingSupportApplications
-  ${PREFIX}/bin/otbQgisDescriptor MultitempFilteringFilter \
-    ${PREFIX}/lib/otb/applications \
-    ${PREFIX}/share/otb/description/
-  ${PREFIX}/bin/otbQgisDescriptor MultitempFilteringOutcore \
-    ${PREFIX}/lib/otb/applications \
-    ${PREFIX}/share/otb/description/
-  # SertitObject
-  ${PREFIX}/bin/otbQgisDescriptor Aggregate \
-    ${PREFIX}/lib/otb/applications \
-    ${PREFIX}/share/otb/description/
-  ${PREFIX}/bin/otbQgisDescriptor ObjectsRadiometricStatistics \
-    ${PREFIX}/lib/otb/applications \
-    ${PREFIX}/share/otb/description/
-  # otbGRM
-  ${PREFIX}/bin/otbQgisDescriptor GenericRegionMerging \
-    ${PREFIX}/lib/otb/applications \
-    ${PREFIX}/share/otb/description/
-  # OTBTemporalGapFilling
-  ${PREFIX}/bin/otbQgisDescriptor ImageTimeSeriesGapFilling \
-    ${PREFIX}/lib/otb/applications \
-    ${PREFIX}/share/otb/description/
+  if dpkg --compare-versions "$OTB_VERSION" lt "9.1.1"; then
+    # S1TilingSupportApplications
+    ${PREFIX}/bin/otbQgisDescriptor MultitempFilteringFilter \
+      ${PREFIX}/lib/otb/applications \
+      ${PREFIX}/share/otb/description/
+    ${PREFIX}/bin/otbQgisDescriptor MultitempFilteringOutcore \
+      ${PREFIX}/lib/otb/applications \
+      ${PREFIX}/share/otb/description/
+    # SertitObject
+    ${PREFIX}/bin/otbQgisDescriptor Aggregate \
+      ${PREFIX}/lib/otb/applications \
+      ${PREFIX}/share/otb/description/
+    ${PREFIX}/bin/otbQgisDescriptor ObjectsRadiometricStatistics \
+      ${PREFIX}/lib/otb/applications \
+      ${PREFIX}/share/otb/description/
+    # otbGRM
+    ${PREFIX}/bin/otbQgisDescriptor GenericRegionMerging \
+      ${PREFIX}/lib/otb/applications \
+      ${PREFIX}/share/otb/description/
+    # OTBTemporalGapFilling
+    ${PREFIX}/bin/otbQgisDescriptor ImageTimeSeriesGapFilling \
+      ${PREFIX}/lib/otb/applications \
+      ${PREFIX}/share/otb/description/
+  else
+    printf 'MultitempFilteringFilter\nMultitempFilteringOutcore\nAggregate\nObjectsRadiometricStatistics\nGenericRegionMerging\nImageTimeSeriesGapFilling\n' \
+      > /tmp/algos.txt
+    ${PREFIX}/bin/otbQgisDescriptor /tmp/algos.txt \
+      ${PREFIX}/lib/otb/applications \
+      ${PREFIX}/share/otb/description/
+  fi
 fi
