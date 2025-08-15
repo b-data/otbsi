@@ -11,13 +11,13 @@ if [ "${OTB_VERSION%%.*}" -ge "9" ]; then
     -DModule_SertitObject=ON \
     -DModule_otbGRM=ON \
     -DModule_OTBTemporalGapFilling=ON \
-    -DOTB_BUILD_FeaturesExtraction=ON \
-    -DOTB_BUILD_Hyperspectral=ON \
-    -DOTB_BUILD_Learning=ON \
-    -DOTB_BUILD_Miscellaneous=ON \
-    -DOTB_BUILD_SAR=ON \
-    -DOTB_BUILD_Segmentation=ON \
-    -DOTB_BUILD_StereoProcessing=ON \
+    -DOTB_BUILD_FeaturesExtraction=${OTB_BUILD_FEATURES_EXTRACTION} \
+    -DOTB_BUILD_Hyperspectral=${OTB_BUILD_HYPERSPECTRAL} \
+    -DOTB_BUILD_Learning=${OTB_BUILD_LEARNING} \
+    -DOTB_BUILD_Miscellaneous=${OTB_BUILD_MISCELLANEOUS} \
+    -DOTB_BUILD_SAR=${OTB_BUILD_SAR} \
+    -DOTB_BUILD_Segmentation=${OTB_BUILD_SEGMENTATION} \
+    -DOTB_BUILD_StereoProcessing=${OTB_BUILD_STEREO_PROCESSING} \
     -DOTB_USE_6S=${OTB_USE_6S} \
     -DOTB_USE_CURL=${USE_SYSTEM_CURL} \
     -DOTB_USE_GSL=${USE_SYSTEM_GSL} \
@@ -32,6 +32,7 @@ if [ "${OTB_VERSION%%.*}" -ge "9" ]; then
     -DOTB_WRAP_QGIS=${OTB_WRAP_QGIS} \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_INSTALL_PREFIX=${PREFIX} \
+    -DCMAKE_POLICY_DEFAULT_CMP0135=NEW \
     /tmp/OTB-${OTB_VERSION}
 
     if [ "${MODE}" = "install" ]; then
@@ -85,6 +86,7 @@ else
     -DOTB_WRAP_QGIS=${OTB_WRAP_QGIS} \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_INSTALL_PREFIX=${PREFIX} \
+    -DCMAKE_POLICY_DEFAULT_CMP0135=NEW \
     /tmp/OTB-${OTB_VERSION}/SuperBuild
 
   if [ "${MODE}" = "install" ]; then

@@ -1,11 +1,11 @@
 #!/bin/bash
-# Copyright (c) 2024 b-data GmbH.
+# Copyright (c) 2025 b-data GmbH.
 # Distributed under the terms of the MIT License.
 
 set -e
 
-mkdir /var/cache/shark-build
-pushd /var/cache/shark-build > /dev/null
+mkdir /var/cache/itk-build
+pushd /var/cache/itk-build > /dev/null
 
 # Configure
 cmake \
@@ -71,13 +71,13 @@ cmake \
   /tmp/OTB-${OTB_VERSION}/SuperBuild
 
 # Build
-make SHARK
+make ITK
 
 # Install
-cd SHARK/build
+cd ITK/build
 make install
 
-# Use as system Shark
-export USE_SYSTEM_SHARK=ON
+# Use as system ITK
+export USE_SYSTEM_ITK=ON
 
 popd > /dev/null
