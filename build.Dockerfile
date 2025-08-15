@@ -1,16 +1,28 @@
 ARG IMAGE
 ARG PREFIX=/usr/local
 
-FROM ${IMAGE} as builder
+FROM ${IMAGE} AS builder
 
 ARG DEBIAN_FRONTEND=noninteractive
 
+ARG COMPILER_VERSION
+
 ARG OTB_VERSION
+
+ARG OTB_BUILD_FEATURES_EXTRACTION=ON
+ARG OTB_BUILD_HYPERSPECTRAL=ON
+ARG OTB_BUILD_LEARNING=ON
+ARG OTB_BUILD_MISCELLANEOUS=ON
+ARG OTB_BUILD_SAR=ON
+ARG OTB_BUILD_SEGMENTATION=ON
+ARG OTB_BUILD_STEREO_PROCESSING=ON
 
 ARG OTB_USE_6S=ON
 ARG OTB_USE_SIFTFAST=ON
+
 ARG OTB_WRAP_PYTHON=ON
 ARG OTB_WRAP_QGIS=ON
+
 ARG USE_SYSTEM_BOOST=ON
 ARG USE_SYSTEM_CURL=ON
 ARG USE_SYSTEM_EXPAT=ON
@@ -26,6 +38,7 @@ ARG USE_SYSTEM_GSL=ON
 ARG USE_SYSTEM_HDF4=ON
 ARG USE_SYSTEM_HDF5=ON
 ARG USE_SYSTEM_ITK=ON
+## Use USE_SYSTEM_ITK=OFF for Debian 13 and Ubuntu 24.04
 ARG USE_SYSTEM_JPEG=ON
 ARG USE_SYSTEM_LIBKML=ON
 ARG USE_SYSTEM_LIBSVM=ON
@@ -52,15 +65,15 @@ ARG USE_SYSTEM_ZLIB=ON
 ARG PREFIX
 ARG MODE=install
 
-ENV CC=/usr/lib/ccache/gcc \
-    CXX=/usr/lib/ccache/g++ \
+ENV CC=/usr/lib/ccache/gcc${COMPILER_VERSION:+-}${COMPILER_VERSION} \
+    CXX=/usr/lib/ccache/g++${COMPILER_VERSION:+-}${COMPILER_VERSION} \
     LANG=C.UTF-8 \
     PATH=/usr/lib/ccache:$PATH
 
 ## Install system dependencies
 RUN if [ "$(uname -m)" = "x86_64" ]; then \
     apt-get update; \
-    apt-get -y install \
+    apt-get -y install --no-install-recommends \
       apt-transport-https \
       bzip2 \
       ca-certificates \
@@ -68,8 +81,8 @@ RUN if [ "$(uname -m)" = "x86_64" ]; then \
       cmake \
       curl \
       dirmngr \
-      g++ \
-      gcc \
+      g++${COMPILER_VERSION:+-}${COMPILER_VERSION} \
+      gcc${COMPILER_VERSION:+-}${COMPILER_VERSION} \
       git \
       make \
       nano \
@@ -80,8 +93,6 @@ RUN if [ "$(uname -m)" = "x86_64" ]; then \
       python3-pip \
       python3-setuptools \
       lsb-release \
-      software-properties-common \
-      swig \
       unzip \
       vim \
       wget \
@@ -90,7 +101,7 @@ RUN if [ "$(uname -m)" = "x86_64" ]; then \
 
 ## Install build dependencies (codename-independent)
 RUN if [ "$(uname -m)" = "x86_64" ]; then \
-    apt-get -y install \
+    apt-get -y install --no-install-recommends \
       freeglut3-dev \
       libboost-date-time-dev \
       libboost-filesystem-dev \
@@ -106,7 +117,6 @@ RUN if [ "$(uname -m)" = "x86_64" ]; then \
       libglew-dev \
       libglfw3-dev \
       libgsl-dev \
-      libinsighttoolkit4-dev \
       libkml-dev \
       libmuparser-dev \
       libmuparserx-dev \
@@ -134,7 +144,13 @@ RUN if [ "$(uname -m)" = "x86_64" ]; then \
 RUN if [ "$(uname -m)" = "x86_64" ]; then \
     . /etc/os-release; \
     if $(echo $VERSION_CODENAME | grep -Eq "buster|bullseye|focal"); then \
-      apt-get -y install libossim-dev; \
+      apt-get -y install --no-install-recommends libossim-dev; \
+    fi; \
+    if $(echo $VERSION_CODENAME | grep -Eq "buster|bullseye|bookworm|focal|jammy"); then \
+      apt-get -y install --no-install-recommends libinsighttoolkit4-dev; \
+    fi; \
+    if $(echo $VERSION_CODENAME | grep -Eq "buster|bullseye|bookworm|focal|jammy|noble"); then \
+      apt-get -y install --no-install-recommends swig; \
     fi \
   fi
 

@@ -16,6 +16,18 @@ curl -sSL https://www.orfeo-toolbox.org/packages/archives/OTB/OTB-${OTB_VERSION}
 mkdir -p /tmp/OTB-${OTB_VERSION}
 tar xfz /tmp/OTB-${OTB_VERSION}.tar.gz --no-same-owner -C /tmp/OTB-${OTB_VERSION}
 
+. /etc/os-release
+# Install Swig 4.2.1 if OS is Debian 13
+# https://github.com/numpy/numpy/issues/27578
+if echo $VERSION_CODENAME | grep -Eq "trixie"; then
+  install-swig.sh
+fi
+
+# Install ITK 4 if OS is Debian 13 or Ubuntu 24.04
+if echo $VERSION_CODENAME | grep -Eq "trixie|noble"; then
+  install-itk.sh
+fi
+
 # Install Shark if OTB version ≥ 9
 if [[ "${OTB_VERSION%%.*}" -ge "9" ]]; then
   install-shark.sh
