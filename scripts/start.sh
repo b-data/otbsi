@@ -17,14 +17,14 @@ mkdir -p /tmp/OTB-${OTB_VERSION}
 tar xfz /tmp/OTB-${OTB_VERSION}.tar.gz --no-same-owner -C /tmp/OTB-${OTB_VERSION}
 
 . /etc/os-release
-# Install Swig 4.2.1 if OS is Debian 13
+# Install Swig 4.2.1 if OS is Debian 13 or Ubuntu 26.04
 # https://github.com/numpy/numpy/issues/27578
-if echo $VERSION_CODENAME | grep -Eq "trixie"; then
+if echo $VERSION_CODENAME | grep -Eq "trixie|resolute"; then
   install-swig.sh
 fi
 
-# Install ITK 4 if OS is Debian 13 or Ubuntu 24.04
-if echo $VERSION_CODENAME | grep -Eq "trixie|noble"; then
+# Install ITK 4 if OS is Debian 13 or Ubuntu 24.04/26.04
+if echo $VERSION_CODENAME | grep -Eq "trixie|noble|resolute"; then
   install-itk.sh
 fi
 
