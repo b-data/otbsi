@@ -4,6 +4,11 @@
 
 set -e
 
+. /etc/os-release
+if echo $VERSION_CODENAME | grep -Eq "resolute"; then
+  export CMAKE_POLICY_VERSION_MINIMUM=3.5
+fi
+
 if [ "${OTB_VERSION%%.*}" -ge "9" ]; then
   # Configure
   cmake \
@@ -148,3 +153,5 @@ if [ "${MODE}" = "install" ]; then
       ${PREFIX}/share/otb/description/
   fi
 fi
+
+unset CMAKE_POLICY_VERSION_MINIMUM

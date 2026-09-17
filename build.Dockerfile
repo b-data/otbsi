@@ -6,6 +6,7 @@ FROM ${IMAGE} AS builder
 ARG DEBIAN_FRONTEND=noninteractive
 
 ARG COMPILER_VERSION
+## Use COMPILER_VERSION=14 for Ubuntu 26.04
 
 ARG OTB_VERSION
 
@@ -24,6 +25,7 @@ ARG OTB_WRAP_PYTHON=ON
 ARG OTB_WRAP_QGIS=ON
 
 ARG USE_SYSTEM_BOOST=ON
+## Use USE_SYSTEM_BOOST=OFF for Ubuntu 26.04
 ARG USE_SYSTEM_CURL=ON
 ARG USE_SYSTEM_EXPAT=ON
 ARG USE_SYSTEM_FFTW=ON
@@ -38,7 +40,7 @@ ARG USE_SYSTEM_GSL=ON
 ARG USE_SYSTEM_HDF4=ON
 ARG USE_SYSTEM_HDF5=ON
 ARG USE_SYSTEM_ITK=ON
-## Use USE_SYSTEM_ITK=OFF for Debian 13 and Ubuntu 24.04
+## Use USE_SYSTEM_ITK=OFF for Debian 13 and Ubuntu 24.04/26.04
 ARG USE_SYSTEM_JPEG=ON
 ARG USE_SYSTEM_LIBKML=ON
 ARG USE_SYSTEM_LIBSVM=ON
@@ -151,6 +153,10 @@ RUN if [ "$(uname -m)" = "x86_64" ]; then \
     fi; \
     if $(echo $VERSION_CODENAME | grep -Eq "buster|bullseye|bookworm|focal|jammy|noble"); then \
       apt-get -y install --no-install-recommends swig; \
+    fi; \
+    if [ -n "$COMPILER_VERSION" ]; then \
+      update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-${COMPILER_VERSION} 10; \
+      update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-${COMPILER_VERSION} 10; \
     fi \
   fi
 

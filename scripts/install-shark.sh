@@ -7,6 +7,11 @@ set -e
 mkdir /var/cache/shark-build
 pushd /var/cache/shark-build > /dev/null
 
+. /etc/os-release
+if echo $VERSION_CODENAME | grep -Eq "resolute"; then
+  export CMAKE_POLICY_VERSION_MINIMUM=3.5
+fi
+
 # Configure
 cmake \
   -DOTB_BUILD_FeaturesExtraction=${OTB_BUILD_FEATURES_EXTRACTION} \
@@ -79,5 +84,7 @@ make install
 
 # Use as system Shark
 export USE_SYSTEM_SHARK=ON
+
+unset CMAKE_POLICY_VERSION_MINIMUM
 
 popd > /dev/null
